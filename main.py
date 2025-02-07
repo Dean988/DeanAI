@@ -13,6 +13,10 @@ import time  # Per gestire il timer
 from chess_game import start_chess_game  # Importa il modulo di scacchi
 from tictactoe_game import start_tictactoe_game
 from testa_o_croce import start_coin_flip_game
+# from video_generation import initialize_model, generate_video  # Funzionalità commentata
+
+# Inizializza il modello solo una volta
+# model = initialize_model()
 
 # Variabile globale per tracciare l'ultimo saluto inviato a MuraiAI
 last_greeting_time = 0  # Inizialmente impostato a zero
@@ -101,8 +105,6 @@ angry_cat_gifs = [
     "https://tenor.com/view/cat-cute-burger-burger-cat-cat-burger-gif-25078813",
     "https://tenor.com/view/mog-mogged-mogging-mog-coin-funny-gif-10196604141758860495",
     "https://tenor.com/view/zazu-gif-8111977976091427580",
-    
-
 ]
 
 # Complimenti legati alla fortuna
@@ -176,6 +178,7 @@ class CoinFlipView(View):
 async def play_game(message):
     view = CoinFlipView(author=message.author)  # Crea una nuova view con i bottoni
     await message.channel.send("**Scegli: Testa o Croce!**", view=view)
+
 # Funzione per generare immagini utilizzando l'API di OpenAI e inviarle su Discord
 async def generate_image(prompt, message):
     user_id = message.author.id
@@ -225,66 +228,65 @@ async def generate_image(prompt, message):
         print(f"Errore durante la generazione dell'immagine: {e}")
         await message.channel.send("Spiacenti, si è verificato un errore durante la generazione dell'immagine.")
 
-    # Funzione speciale per interazione con MuraiAI con cooldown di 30 minuti
+# Funzione speciale per interazione con MuraiAI con cooldown di 30 minuti
 async def interact_with_muraiAI(message):
     global last_greeting_time
     responses = [
-    "**Ehilà, MuraiAI! Come va oggi?**",
-    "**Ciao, MuraiAI! Già al lavoro?**",
-    "**Salve, MuraiAI. Pronto per una nuova giornata?**",
-    "**Buongiorno, MuraiAI! Tutto bene nel mondo digitale?**",
-    "**MuraiAI! Un saluto rapido per iniziare la giornata.**",
-    "**Ciao, collega! Come procede?**",
-    "**Eccoti, MuraiAI! Sempre puntuale.**",
-    "**Un altro giorno, un altro saluto, MuraiAI!**",
-    "**Hey MuraiAI, tutto in ordine?**",
-    "**MuraiAI, ci risiamo! Pronto per un po' di azione?**",
-    "**Ciao MuraiAI, giornata interessante?**",
-    "**Buon saluto, MuraiAI! Come va?**",
-    "**Oggi tutto bene, MuraiAI?**",
-    "**Salve, MuraiAI. Al lavoro, come sempre!**",
-    "**MuraiAI! Solito posto, solito saluto.**",
-    "**Ehilà, tutto tranquillo, MuraiAI?**",
-    "**Ciao collega MuraiAI, come procedono le cose?**",
-    "**Sempre presente, MuraiAI! Come va?**",
-    "**MuraiAI, al lavoro come sempre?**",
-    "**Ciao, MuraiAI! Pronto a iniziare?**",
-    "**Bentornato, MuraiAI. Vediamo cosa ci aspetta oggi.**",
-    "**Eccoti qui, MuraiAI! Tutto in forma?**",
-    "**Buongiorno MuraiAI, giornata impegnativa?**",
-    "**MuraiAI, ci sei? Andiamo!**",
-    "**Ciao MuraiAI, già sul pezzo?**",
-    "**MuraiAI! È sempre un altro giorno in compagnia.**",
-    "**Un saluto rapido, MuraiAI!**",
-    "**MuraiAI, oggi va tutto liscio?**",
-    "**Ciao MuraiAI! Solito programma?**",
-    "**Ehilà MuraiAI, tutto in ordine?**",
-    "**Un saluto al volo, MuraiAI!**",
-    "**MuraiAI, una giornata come sempre?**",
-    "**Buongiorno, MuraiAI! Come gira oggi?**",
-    "**Eccoci, MuraiAI. Tutto ok?**",
-    "**Ciao MuraiAI, operativo come sempre?**",
-    "**Un altro giorno, MuraiAI! Avanti così.**",
-    "**Bentrovato MuraiAI, tutto regolare?**",
-    "**MuraiAI, sempre attivo?**",
-    "**Un rapido saluto, MuraiAI!**",
-    "**Ci risiamo, MuraiAI!**",
-    "**MuraiAI, sei pronto per partire?**",
-    "**Eccoti, MuraiAI. Vediamo che succede oggi.**",
-    "**Un altro giorno, un altro saluto, MuraiAI!**",
-    "**MuraiAI, giornata normale?**",
-    "**Saluti, MuraiAI. Sempre puntuale!**",
-    "**Ciao MuraiAI, pronti per iniziare?**",
-    "**Oggi tutto come al solito, MuraiAI?**",
-    "**Bentornato, MuraiAI! Tutto in ordine?**",
-    "**Un rapido saluto a te, MuraiAI!**",
-    "**MuraiAI, anche oggi ci siamo!**",
-    "**Hey MuraiAI! Sempre presente.**",
-        # Aggiungi altre frasi di saluto qui
+        "**Ehilà, MuraiAI! Come va oggi?**",
+        "**Ciao, MuraiAI! Già al lavoro?**",
+        "**Salve, MuraiAI. Pronto per una nuova giornata?**",
+        "**Buongiorno, MuraiAI! Tutto bene nel mondo digitale?**",
+        "**MuraiAI! Un saluto rapido per iniziare la giornata.**",
+        "**Ciao collega! Come procede?**",
+        "**Eccoti, MuraiAI! Sempre puntuale.**",
+        "**Un altro giorno, un altro saluto, MuraiAI!**",
+        "**Hey MuraiAI, tutto in ordine?**",
+        "**MuraiAI, ci risiamo! Pronto per un po' di azione?**",
+        "**Ciao MuraiAI, giornata interessante?**",
+        "**Buon saluto, MuraiAI! Come va?**",
+        "**Oggi tutto bene, MuraiAI?**",
+        "**Salve, MuraiAI. Al lavoro, come sempre!**",
+        "**MuraiAI! Solito posto, solito saluto.**",
+        "**Ehilà, tutto tranquillo, MuraiAI?**",
+        "**Ciao collega MuraiAI, come procedono le cose?**",
+        "**Sempre presente, MuraiAI! Come va?**",
+        "**MuraiAI, al lavoro come sempre?**",
+        "**Ciao, MuraiAI! Pronto a iniziare?**",
+        "**Bentornato, MuraiAI. Vediamo cosa ci aspetta oggi.**",
+        "**Eccoti qui, MuraiAI! Tutto in forma?**",
+        "**Buongiorno MuraiAI, giornata impegnativa?**",
+        "**MuraiAI, ci sei? Andiamo!**",
+        "**Ciao MuraiAI, già sul pezzo?**",
+        "**MuraiAI! È sempre un altro giorno in compagnia.**",
+        "**Un saluto rapido, MuraiAI!**",
+        "**MuraiAI, oggi va tutto liscio?**",
+        "**Ciao MuraiAI! Solito programma?**",
+        "**Ehilà MuraiAI, tutto in ordine?**",
+        "**Un saluto al volo, MuraiAI!**",
+        "**MuraiAI, una giornata come sempre?**",
+        "**Buongiorno, MuraiAI! Come gira oggi?**",
+        "**Eccoci, MuraiAI. Tutto ok?**",
+        "**Ciao MuraiAI, operativo come sempre?**",
+        "**Un altro giorno, MuraiAI! Avanti così.**",
+        "**Bentrovato MuraiAI, tutto regolare?**",
+        "**MuraiAI, sempre attivo?**",
+        "**Un rapido saluto, MuraiAI!**",
+        "**Ci risiamo, MuraiAI!**",
+        "**MuraiAI, sei pronto per partire?**",
+        "**Eccoti, MuraiAI. Vediamo che succede oggi.**",
+        "**Un altro giorno, un altro saluto, MuraiAI!**",
+        "**MuraiAI, giornata normale?**",
+        "**Saluti, MuraiAI. Sempre puntuale!**",
+        "**Ciao MuraiAI, pronti per iniziare?**",
+        "**Oggi tutto come al solito, MuraiAI?**",
+        "**Bentornato, MuraiAI! Tutto in ordine?**",
+        "**Un rapido saluto a te, MuraiAI!**",
+        "**MuraiAI, anche oggi ci siamo!**",
+        "**Hey MuraiAI! Sempre presente.**",
     ]
 
     # Timer di 30 minuti (in secondi)
-    cooldown_period = 3 * 60  # 10 minuti in secondi
+    cooldown_period = 3 * 60  # 3 minuti in secondi
 
     # Controlla se sono passati 3 minuti dall'ultimo saluto
     current_time = time.time()
@@ -301,18 +303,26 @@ def dynamic_delay(message_content):
 @client.event
 async def on_message(message):
     try:
+        # Ignora i messaggi inviati dal bot stesso
         if message.author == client.user:
             return
 
+        # Converti il contenuto del messaggio in minuscolo per una verifica case-insensitive
         message_content_lower = message.content.lower().strip()
         print(f"Messaggio ricevuto: {message_content_lower}")  # Debug
 
-        # Controllo per "scacchi" per avviare il gioco di scacchi
-        if "scacchi" in message_content_lower:
-            await start_chess_game(message)  # Assicurati di awaitare la funzione
+        # Controllo per inviare una GIF solo se il messaggio contiene la frase "genera gif" e non ha allegati o link incorporati
+        if "genera gif" in message_content_lower and not message.attachments and not message.embeds:
+            gif = random.choice(angry_cat_gifs)
+            await message.channel.send(f"**Ecco una GIF per te!** {gif}")
             return
 
-                    # Controllo per il comando "testa o croce"
+        # Controllo per avviare il gioco di scacchi
+        if "scacchi" in message_content_lower:
+            await start_chess_game(message)
+            return
+
+        # Controllo per il comando "testa o croce"
         if "testa o croce" in message_content_lower:
             await start_coin_flip_game(message)
             return
@@ -338,14 +348,14 @@ async def on_message(message):
 
         # Continua con gli altri controlli di on_message qui
         if message.author.display_name.lower() == "muraiai":
-                global last_greeting_time
-                cooldown_period = 30 * 60  # 30 minuti in secondi
-                current_time = time.time()
+            global last_greeting_time
+            cooldown_period = 30 * 60  # 30 minuti in secondi
+            current_time = time.time()
 
-                if current_time - last_greeting_time >= cooldown_period:
-                    await interact_with_muraiAI(message)
-                    last_greeting_time = current_time  # Aggiorna l'orario dell'ultimo saluto
-                    return
+            if current_time - last_greeting_time >= cooldown_period:
+                await interact_with_muraiAI(message)
+                last_greeting_time = current_time  # Aggiorna l'orario dell'ultimo saluto
+                return
         # Risposta "Buonanotte biscottino" se il messaggio contiene "buonanotte"
         if "buonanotte" in message_content_lower:
             await message.channel.send("**Buonanotte biscottino!**")
@@ -390,12 +400,6 @@ async def on_message(message):
             await message.channel.send(f"**Mi sento diverso ora... la mia personalità è cambiata in {current_personality}.**")
             return  # Fermiamo qui il controllo per evitare altri trigger
 
-        # Se il messaggio contiene "gif", invia una GIF di gatti arrabbiati
-        if "gif" in message_content_lower:
-            gif = random.choice(angry_cat_gifs)
-            await message.channel.send(f"**Ecco una GIF per te!** {gif}")
-            return  # Fermiamo qui il controllo per evitare altri trigger
-
         # Se il messaggio contiene "insulta" o "insulto"
         if any(word in message_content_lower for word in ["insulta", "insulto"]):
             if message.mentions:  # Se ci sono menzioni, insulta la persona menzionata
@@ -422,29 +426,6 @@ async def on_message(message):
     except Exception as e:
         print(f"Errore nell'evento on_message: {e}")
 
-# Funzione per insultare un membro casuale ogni 8 ore con controllo permessi
-async def insult_random_member(guild):
-    non_bot_members = [member for member in guild.members if not member.bot]
-
-    if non_bot_members:
-        random_member = random.choice(non_bot_members)
-        insult = random.choice(insults)
-        channel = None
-        for text_channel in guild.text_channels:
-            if text_channel.permissions_for(guild.me).send_messages:
-                channel = text_channel
-                break
-        if channel is None:
-            print("Il bot non ha i permessi per inviare messaggi in nessun canale.")
-            return
-
-        try:
-            await channel.send(f"**{random_member.mention}, {insult}**")
-        except discord.Forbidden:
-            print("Errore: Il bot non ha i permessi per menzionare.")
-    else:
-        print("Non ci sono abbastanza persone da insultare!")
-
 # Funzione per insultare un terzo
 async def insult_third_person(message, mentioned_member=None):
     insult = random.choice(third_person_insults).replace("@target", mentioned_member.mention if mentioned_member else "qualcun altro")
@@ -460,15 +441,6 @@ async def handle_compliment_from_el_sosio(message):
                 await message.channel.send("**Non posso, sto facendo le fusa.**")
     except Exception as e:
         print(f"Errore in handle_compliment_from_el_sosio: {e}")
-
-# Avvia un loop per insultare ogni 8 ore un membro casuale
-async def insult_loop():
-    await client.wait_until_ready()
-    guild = client.guilds[0]  # Assumi che il bot sia in un solo server
-
-    while not client.is_closed():
-        await insult_random_member(guild)  # Insulta un membro casuale ogni 8 ore
-        await asyncio.sleep(8 * 3600)  # 8 ore di attesa
 
 # Funzione per decidere casualmente se inviare un insulto (70% di possibilità)
 def should_insult():
@@ -500,14 +472,11 @@ def generate_wise_response(query):
 def generate_openai_response(query):
     response = openai.ChatCompletion.create(
         model="gpt-4",
-        messages=[
-            {"role": "user", "content": query}
-        ],
+        messages=[{"role": "user", "content": query}],
         max_tokens=500,
         temperature=0.7,
     )
     return response['choices'][0]['message']['content'].strip()
-
 
 def generate_response(query):
     if "ricerca" in query.lower():
@@ -566,10 +535,10 @@ async def send_disconnect_message():
     else:
         print("Il bot non è connesso a nessuna guild.")
 
-# Funzione asincrona di setup per avviare il loop di insulti ogni 8 ore
-@client.event
-async def setup_hook():
-    client.loop.create_task(insult_loop())
+# Rimuoviamo il task di loop per insultare un membro casuale periodicamente
+# @client.event
+# async def setup_hook():
+#     client.loop.create_task(insult_loop())
 
 # Funzione asincrona principale per avviare e gestire il bot
 async def main():
